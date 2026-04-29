@@ -1,0 +1,6 @@
+board:
+  name: copy_board
+  full_name: Nucleo F411RE Copy
+  vendor: bugi
+  socs:
+    - name: stm32f411xe
