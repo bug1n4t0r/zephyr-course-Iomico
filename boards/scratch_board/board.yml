@@ -1,0 +1,6 @@
+board:
+  name: scratch_board
+  full_name: Scratch Clone for F411RE
+  vendor: bugi
+  socs:
+    - name: stm32f411xe
