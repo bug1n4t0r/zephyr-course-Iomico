@@ -1,0 +1,6 @@
+name: bugis_driver
+build:
+  cmake: .
+  kconfig: kconfig
+  settings:
+    dts_root: .

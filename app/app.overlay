@@ -1,0 +1,16 @@
+/{
+    bugis_driver0: bugis_driver {
+        compatible = "bugis,driver";
+        status = "okay";
+    };
+
+    bugis_driver1: bugis_driver1 {
+        compatible = "bugis,driver";
+        status = "okay";
+    };
+
+    aliases {
+        heartbeat-led = &green_led_2;
+        btn= &user_button;
+    };
+};

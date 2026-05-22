@@ -1,0 +1,4 @@
+description: Bugis custom driver binding
+compatible: "bugis,driver"
+include: gpio.yaml
+

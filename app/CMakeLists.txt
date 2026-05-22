@@ -8,3 +8,5 @@ find_package(Zephyr REQUIRED)
 project(my_zephyr_app)
 
 target_sources(app PRIVATE src/main.cpp)
+add_subdirectory("../driver_module/drivers/bugis_driver" 
+                 "${CMAKE_CURRENT_BINARY_DIR}/bugis_driver")
