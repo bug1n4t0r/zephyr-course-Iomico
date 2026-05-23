@@ -1,4 +1,5 @@
-#include <zephyr/drivers/sensor.h>
+// #include <zephyr/drivers/sensor.h>
+#include <bugis_driver.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/drivers/gpio.h>
 
@@ -12,6 +13,8 @@ static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED_NODE, gpios);
 LOG_MODULE_REGISTER(bugis_driver, LOG_LEVEL_INF);
 
 static bool led_state = true;
+
+static struct sensor_value bugis_val = {.val = 0};
 
 static int channel_get_bugis_impl(const struct device *dev,
                                   enum sensor_channel chan,
@@ -32,9 +35,25 @@ static int sample_fetch_bugis_impl(const struct device *dev,
     return 0;
 }
 
-static DEVICE_API(sensor, api_bugis_driver) = {
+static int set_value(const struct device *dev, uint8_t *val)
+{
+    bugis_val.val = *val;
+    LOG_INF("Value is set!");
+    return 0;
+}
+
+static int get_value(const struct device *dev, uint8_t *val)
+{
+    *val = bugis_val.val;
+    LOG_INF("Got Value!");
+    return 0;
+}
+
+static DEVICE_API(bugis, api_bugis_driver) = {
     .channel_get = channel_get_bugis_impl,
-    .sample_fetch = sample_fetch_bugis_impl};
+    .sample_fetch = sample_fetch_bugis_impl,
+    .set_val = set_value,
+    .get_val = get_value};
 
 static int init(const struct device *dev)
 {
@@ -49,6 +68,6 @@ static int init(const struct device *dev)
     return 0;
 }
 
-#define DEV_INST(inst) DEVICE_DT_INST_DEFINE(inst, init, NULL, NULL, NULL, POST_KERNEL, 80, &api_bugis_driver);
+#define DEV_INST(inst) DEVICE_DT_INST_DEFINE(inst, init, NULL, &bugis_val, NULL, POST_KERNEL, 80, &api_bugis_driver);
 
 DT_INST_FOREACH_STATUS_OKAY(DEV_INST);
