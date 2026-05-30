@@ -43,11 +43,12 @@ ZTEST(ring_buf_init, test_fresh_state)
 
 ZTEST(ring_buf_init, test_reinit_clears_state)
 {
-	/* TODO(l8-task1): Push a value, call rb_init(4) again, then
-	 * verify the buffer is empty and count is 0.
-	 * See TEST_SPEC.md "Suite ring_buf_init" #2.
-	 */
-	ztest_test_skip();
+	int v = 3;
+
+	rb_push(v);
+	zassert_equal(rb_count(), 1 , "Buffer count must be 1");
+	rb_init(4);
+	zassert_equal(rb_count(), 0, "Fresh buffer count must be 0");
 }
 
 /*
@@ -61,10 +62,12 @@ ZTEST_SUITE(ring_buf_push_pop, NULL, NULL, before, NULL, NULL);
 
 ZTEST(ring_buf_push_pop, test_single_push_pop)
 {
-	/* TODO(l8-task1): rb_push(42), rb_pop(&v) -> v == 42, buffer empty after.
-	 * See TEST_SPEC.md "Suite ring_buf_push_pop" #1.
-	 */
-	ztest_test_skip();
+	rb_push(42);
+
+	int v;
+	rb_pop(&v);
+	zassert_equal(42, v, "Popped Value must be 42");
+	zassert_equal(rb_is_empty(), true, "Buffer sount must be empty = true");
 }
 
 ZTEST(ring_buf_push_pop, test_fifo_order)
@@ -73,16 +76,31 @@ ZTEST(ring_buf_push_pop, test_fifo_order)
 	 * and verify the values come out as 1, 2, 3 in that order.
 	 * See TEST_SPEC.md "Suite ring_buf_push_pop" #2.
 	 */
-	ztest_test_skip();
+	int v[3];
+	for (uint8_t i = 0; i < 3; i++)
+	{
+		rb_push(i+1);
+	}
+	
+	for (uint8_t i = 0; i < 3; i++)
+	{
+		rb_pop(&v[i]);
+		zassert_equal(v[i], i+1, "Val must be %d", i+1);
+	}
+
+	zassert_equal(rb_is_empty(), true, "Buffer sount must be empty = true");
 }
 
 ZTEST(ring_buf_push_pop, test_push_full_returns_enospc)
 {
-	/* TODO(l8-task1): Fill the buffer to its capacity of 4, then push
-	 * one more value -> -ENOSPC.
-	 * See TEST_SPEC.md "Suite ring_buf_push_pop" #3.
-	 */
-	ztest_test_skip();
+	for (uint8_t i = 0; i < 4; i++)
+	{
+		rb_push(i+1);
+	}
+
+	zassert_equal(rb_is_full(), true, "Buffer sount must be full = true");
+	zassert_equal(rb_push(99), -ENOSPC, "Buffer must return -ENOSPC");
+	zassert_equal(rb_count(), 4, "Buffer count must be 4");
 }
 
 /*
@@ -96,25 +114,30 @@ ZTEST_SUITE(ring_buf_boundaries, NULL, NULL, before, NULL, NULL);
 
 ZTEST(ring_buf_boundaries, test_peek_does_not_consume)
 {
-	/* TODO(l8-task1): rb_push(7); rb_peek(&v) -> v == 7; rb_peek(&v) again
-	 * -> v == 7; rb_count() still == 1.
-	 * See TEST_SPEC.md "Suite ring_buf_boundaries" #1.
-	 */
-	ztest_test_skip();
+	rb_push(7);
+	
+	int v;
+
+	zassert_equal(rb_peek(&v), 0, "Must be 0");
+	zassert_equal(v,7, "Must be 7");
+	zassert_equal(rb_peek(&v), 0, "Must be 0");
+	zassert_equal(v,7, "Musst be 7");
+	zassert_equal(rb_count() ,1, "Must be 1");
 }
 
 ZTEST(ring_buf_boundaries, test_pop_null_returns_einval)
 {
-	/* TODO(l8-task1): rb_pop(NULL) -> -EINVAL.
-	 * See TEST_SPEC.md "Suite ring_buf_boundaries" #2.
-	 */
-	ztest_test_skip();
+	zassert_equal(rb_pop(NULL), -EINVAL, "Must be -EINVAL");
 }
 
 ZTEST(ring_buf_boundaries, test_is_full_after_fill)
 {
-	/* TODO(l8-task1): push 4 values -> rb_is_full() == true, rb_count() == 4.
-	 * See TEST_SPEC.md "Suite ring_buf_boundaries" #3.
-	 */
-	ztest_test_skip();
+	for (uint8_t i = 0; i < 4; i++)
+	{
+		zassert_equal(rb_push(i), 0, "Must be 0");
+	}
+
+	zassert_equal(rb_is_full(), true, "Must be true");
+	zassert_equal(rb_count(), 4, "Must be 4");
+	
 }
