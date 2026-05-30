@@ -13,14 +13,14 @@ int main(void) {
   uint8_t              zahl    = 0;
 
   while (1) {
-    bugis_set_val(driver, &zahl);
-    sensor_channel_get(driver, SENSOR_CHAN_AMBIENT_TEMP, &val);
+    // bugis_set_val(driver, &zahl);
+    // sensor_channel_get(driver, SENSOR_CHAN_AMBIENT_TEMP, &val);
+    // k_msleep(CONFIG_APP_HEARTBEAT_PERIOD_MS);
+    // sensor_sample_fetch(driver);
+    // bugis_get_val(driver, &zahl);
     k_msleep(CONFIG_APP_HEARTBEAT_PERIOD_MS);
-    sensor_sample_fetch(driver);
-    bugis_get_val(driver, &zahl);
-    k_msleep(CONFIG_APP_HEARTBEAT_PERIOD_MS);
-    LOG_INF("%d", my_data->val);
-    zahl++;
+    // LOG_INF("%d", my_data->val);
+    // zahl++;
   }
   return 0;
 }
