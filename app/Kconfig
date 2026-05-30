@@ -56,4 +56,4 @@ endmenu
 endif
 
 source "Kconfig.zephyr"
-rsource "../driver_module/drivers/bugis_driver/KConfig"
+rsource "../driver_module/drivers/bugis_driver/Kconfig"
